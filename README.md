@@ -4,6 +4,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
+
+###
+
+Mock server created with "json-server".
+Npm start runs server and app. 
+
 ### `npm start`
 
 Runs the app in the development mode.<br />
