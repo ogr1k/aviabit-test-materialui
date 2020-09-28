@@ -13,7 +13,7 @@ import {
 } from '../../reducer/selector';
 import Loader from '../loader/loader';
 import useStyles from './styles';
-import FlightsCardsList from '../flights-cards-list/fliights-cards-list';
+import FlightsCardsList from '../flights-cards-list/flights-cards-list';
 
 const getFormattedData = (year, yearIndex, month, timeData, yearResults, timeType) => (Number(month)
   ? `${formatDate(timeData[timeType][year].flightTime[month])} 

@@ -49,7 +49,7 @@ function Main(props) {
   const classes = useStyles();
 
   const redirectToPathMemoized = useCallback((e) => {
-    const { year, monthindex } = e.target.dataset;
+    const { year, monthindex } = e.currentTarget.dataset;
     if (year) {
       history.push(`/information/${year}`)
     } else {
@@ -78,7 +78,7 @@ function Main(props) {
                       data-year={year}
                       onClick={redirectToPathMemoized}
                     >
-                      { year }
+                      {year}
                     </Button>
                     <Select year={year} isPlanned={isPlanned} setIsPlanned={setIsPlanned} />
                   </TableCell>
