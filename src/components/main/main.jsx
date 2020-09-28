@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,7 +8,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import { Container, Grid } from '@material-ui/core';
 import {
@@ -19,24 +18,12 @@ import Chart from '../chart/chart';
 import { formatDate } from '../../util';
 import { MONTHS } from '../../constants'
 import Loader from '../loader/loader';
+import useStyles from './styles';
 
 const TimeTypes = {
   flightTime: 'flightTime',
   workTime: 'workTime',
 }
-
-const TableCellStyled = withStyles({
-  root: {
-    border: '1px solid',
-    textAlign: 'center',
-  },
-})(TableCell);
-
-const useStyles = makeStyles((theme) => ({
-  chartContainer: {
-    marginTop: theme.spacing(10),
-  },
-}));
 
 const getCellTimeData = (timeData, type, year, isPlanned, index) => {
   const currentYear = new Date().getFullYear();
@@ -61,6 +48,15 @@ function Main(props) {
   const history = useHistory();
   const classes = useStyles();
 
+  const redirectToPathMemoized = useCallback((e) => {
+    const { year, monthindex } = e.target.dataset;
+    if (year) {
+      history.push(`/information/${year}`)
+    } else {
+      history.push(`/information/${availableYears[0]}/${monthindex}`)
+    }
+  }, [history, availableYears])
+
   if (!availableYears.length) {
     return <Loader />;
   }
@@ -74,25 +70,25 @@ function Main(props) {
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCellStyled />
+                <TableCell className={classes.timeCell} rowSpan={2} />
                 {availableYears.map((year) => (
-                  <TableCellStyled align="center" key={year} colSpan={2} style={{}}>
+                  <TableCell className={classes.timeCell} key={year} colSpan={2}>
                     <Button
                       variant="contained"
-                      onClick={() => history.push(`/information/${year}`)}
+                      data-year={year}
+                      onClick={redirectToPathMemoized}
                     >
                       { year }
                     </Button>
                     <Select year={year} isPlanned={isPlanned} setIsPlanned={setIsPlanned} />
-                  </TableCellStyled>
+                  </TableCell>
                 ))}
               </TableRow>
               <TableRow>
-                <TableCellStyled />
                 {availableYears.map((year) => (
                   <React.Fragment key={year}>
-                    <TableCellStyled> Налет </TableCellStyled>
-                    <TableCellStyled> Рабочее время </TableCellStyled>
+                    <TableCell className={classes.timeCell}>Налет</TableCell>
+                    <TableCell className={classes.timeCell}>Рабочее время</TableCell>
                   </React.Fragment>
                 ))}
               </TableRow>
@@ -100,19 +96,17 @@ function Main(props) {
             <TableBody>
               {MONTHS.map((month, index) => (
                 <TableRow key={month}>
-                  <TableCellStyled align="center">
-                    <Button variant="contained" onClick={() => history.push(`/information/${availableYears[0]}/${index}`)}>{month}</Button>
-                  </TableCellStyled>
+                  <TableCell className={classes.timeCell}>
+                    <Button variant="contained" data-monthindex={index} onClick={redirectToPathMemoized}>{month}</Button>
+                  </TableCell>
                   {availableYears.map((year) => (
                     <React.Fragment key={year}>
-                      <TableCellStyled align="center">
+                      <TableCell className={classes.timeCell}>
                         {getCellTimeData(timeData, TimeTypes.flightTime, year, isPlanned, index)}
-                      </TableCellStyled>
-                      <TableCellStyled align="center">
-                        {
-                          getCellTimeData(timeData, TimeTypes.workTime, year, isPlanned, index)
-                                            }
-                      </TableCellStyled>
+                      </TableCell>
+                      <TableCell className={classes.timeCell}>
+                        {getCellTimeData(timeData, TimeTypes.workTime, year, isPlanned, index)}
+                      </TableCell>
                     </React.Fragment>
                   ))}
                 </TableRow>

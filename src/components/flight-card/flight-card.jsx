@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const getDateWithEnoughSymbols = (data) => data.toString().padStart(2, 0)
+const getDateWithEnoughSymbols = (data) => data.toString().padStart(2, '0')
 
 const getFormattedData = (date) => {
   const dt = new Date(date);
