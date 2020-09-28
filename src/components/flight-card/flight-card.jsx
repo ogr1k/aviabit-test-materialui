@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -8,36 +7,7 @@ import Box from '@material-ui/core/Box';
 import clsx from 'clsx';
 import Divider from '@material-ui/core/Divider';
 import { formatDate } from '../../util';
-
-const useStyles = makeStyles((theme) => ({
-  title: {
-    fontSize: 14,
-  },
-  cardContainer: {
-    border: '1px solid black',
-    padding: '0px',
-  },
-  box: {
-    padding: '5px',
-    textAlign: 'center',
-  },
-  destinationBox: {
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  flight: {
-    marginRight: theme.spacing(3),
-  },
-  cardHeader: {
-    backgroundColor: '#E7E7E7',
-    color: '#002F5D',
-    textTransform: 'uppercase',
-    textAlign: 'center',
-  },
-  root: {
-    padding: '0px',
-  },
-}));
+import useStyles from './styles';
 
 const getDateWithEnoughSymbols = (data) => data.toString().padStart(2, '0')
 

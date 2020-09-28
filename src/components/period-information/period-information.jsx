@@ -1,40 +1,25 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { connect } from 'react-redux';
 import {
-  Container, Typography, Box, NativeSelect, FormControl, FormHelperText, Grid, Button,
+  Container, Typography, Box, NativeSelect, FormControl, FormHelperText,
 } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { formatDate } from '../../util';
 import { MONTHS } from '../../constants';
-import FlightCard from '../flight-card/flight-card';
 import {
   getAvailableYears, getFlightsData, getTimeData, getPeriodData,
 } from '../../reducer/selector';
 import Loader from '../loader/loader';
-import useStyles from '../flight-card/styles';
-
-const DEFAULT_MAX_CARDS = 6;
+import useStyles from './styles';
+import FlightsCardsList from '../flights-cards-list/fliights-cards-list';
 
 const getFormattedData = (year, yearIndex, month, timeData, yearResults, timeType) => (Number(month)
   ? `${formatDate(timeData[timeType][year].flightTime[month])} 
           / ${formatDate(timeData[timeType][year].workTime[month])}`
   : `${formatDate(yearResults[timeType].flightTime[yearIndex])} 
           / ${formatDate(yearResults[timeType].workTime[yearIndex])}`)
-
-const monthSelectChangeHandler = (e, history, pickedYear) => {
-  const { value } = e.target;
-
-  if (!value) {
-    history.push(`/information/${pickedYear}`)
-    return;
-  }
-
-  const index = MONTHS.findIndex((currentMonth) => currentMonth === value);
-
-  history.push(`/information/${pickedYear}/${index}`)
-}
 
 const PeriodInformation = (props) => {
   const {
@@ -48,18 +33,31 @@ const PeriodInformation = (props) => {
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
   const month = MONTHS[routeParams.month];
 
-  const [doneMaxElements, setDoneMaxElements] = React.useState(DEFAULT_MAX_CARDS);
-  const [planMaxElements, setPlanMaxElements] = React.useState(DEFAULT_MAX_CARDS);
-  React.useEffect(() => {
-    setDoneMaxElements(DEFAULT_MAX_CARDS);
-    setPlanMaxElements(DEFAULT_MAX_CARDS);
-  }, [routeParams.month, routeParams.year]);
+  const yearSelectHandlerMemoized = useCallback((e) => {
+    history.push(`/information/${e.target.value}/${routeParams.month ? routeParams.month : ''}`)
+  }, [history, routeParams])
+
+  const monthSelectChangeHandlerMemoized = useCallback((e) => {
+    const { value } = e.target;
+    const pickedYear = routeParams.year;
+
+    if (!value) {
+      history.push(`/information/${pickedYear}`)
+      return;
+    }
+
+    const index = MONTHS.findIndex((currentMonth) => currentMonth === value);
+
+    history.push(`/information/${pickedYear}/${index}`)
+  }, [history, routeParams])
+
+  const yearIndex = useMemo(() => availableYears.findIndex(
+    (year) => Number(routeParams.year) === year,
+  ), [availableYears, routeParams])
 
   if (!flightsData.length) {
     return <Loader />;
   }
-
-  const yearIndex = availableYears.findIndex((year) => Number(routeParams.year) === year)
 
   return (
     <Container maxWidth="md" className={isSmall ? classes.mainContainer : null}>
@@ -71,9 +69,7 @@ const PeriodInformation = (props) => {
               value={
                   routeParams.year
                 }
-              onChange={(e) => {
-                history.push(`/information/${e.target.value}/${routeParams.month ? routeParams.month : ''}`)
-              }}
+              onChange={yearSelectHandlerMemoized}
               inputProps={{
                 name: 'year',
                 id: 'year-native-simple',
@@ -92,7 +88,7 @@ const PeriodInformation = (props) => {
                 name: 'month',
                 id: 'month-native-simple',
               }}
-              onChange={(e) => monthSelectChangeHandler(e, history, routeParams.year)}
+              onChange={monthSelectChangeHandlerMemoized}
             >
               <option aria-label="None" value="" />
               {MONTHS.map((currentMonth) => (
@@ -132,60 +128,8 @@ const PeriodInformation = (props) => {
           </Typography>
           )}
       </Container>
-      <Container className={classes.cardContainer} maxWidth="md">
-        {!!flights.done.length
-            && (
-            <Typography variant="h5">
-              Выполненные:
-            </Typography>
-            )}
-        <Grid container spacing={1}>
-          {flights.done.slice(0, doneMaxElements).map((flight) => (
-            <Grid item xs={12} sm={6} lg={4} md={4} key={flight.timeFlight}>
-              <FlightCard flightData={flight} />
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-      {doneMaxElements <= flights.done.length
-            && (
-            <Button
-              variant="contained"
-              className={classes.showMoreButton}
-              onClick={
-              () => setDoneMaxElements(doneMaxElements + DEFAULT_MAX_CARDS)
-            }
-            >
-              Показать еще
-            </Button>
-            )}
-      <Container className={classes.cardContainer} maxWidth="md">
-        {!!flights.plan.length
-            && (
-            <Typography variant="h5">
-              Запланированные:
-            </Typography>
-            )}
-        <Grid container spacing={1}>
-          {flights.plan.slice(0, planMaxElements).map((flight) => (
-            <Grid item xs={12} sm={6} lg={4} md={4} key={flight.timeFlight}>
-              <FlightCard flightData={flight} />
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-      {planMaxElements <= flights.plan.length
-          && (
-          <Button
-            variant="contained"
-            className={classes.showMoreButton}
-            onClick={
-            () => setPlanMaxElements(planMaxElements + DEFAULT_MAX_CARDS)
-          }
-          >
-            Показать еще
-          </Button>
-          )}
+      <FlightsCardsList flights={flights.done} type="Выполненные" pickedMonth={routeParams.month} pickedYear={routeParams.year} />
+      <FlightsCardsList flights={flights.plan} type="Запланированные" pickedMonth={routeParams.month} pickedYear={routeParams.year} />
     </Container>
   )
 };
