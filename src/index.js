@@ -5,7 +5,6 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import App from './components/app/App';
-import * as serviceWorker from './serviceWorker';
 import { Operation, reducer } from './reducer/reducer';
 
 const store = createStore(
@@ -21,5 +20,3 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('root'),
 );
-
-serviceWorker.unregister();
