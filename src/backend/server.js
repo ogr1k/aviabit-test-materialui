@@ -1,3 +1,5 @@
+const http = require('http');
+
 const MockData = {
   flights: ['AB-3377', 'AB-3378', 'AB-3379'],
   plnType: ['A-320', 'B-757-200', 'B-757-300'],
@@ -74,8 +76,8 @@ function getRandomLandingAirport(takeoff) {
   return getRandomArrayItem(airports);
 }
 
-module.exports = () => {
-  const data = { flights: [] }
+const getData = () => {
+  const data = [];
 
   for (let i = 0; i < 550; i++) {
     const plnType = getRandomArrayItem(MockData.plnType);
@@ -88,7 +90,7 @@ module.exports = () => {
     );
     const takeoff = getRandomArrayItem(MockData.airports);
 
-    data.flights.push({
+    data.push({
       dateFlight: dateFlight.toISOString(),
       flight: getRandomArrayItem(MockData.flights),
       plnType,
@@ -106,3 +108,16 @@ module.exports = () => {
 
   return data
 }
+
+const data = getData();
+
+http.createServer((request, res) => {
+  res.writeHead(200, {
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'text/html; charset=utf-8',
+  })
+
+  res.end(JSON.stringify(data));
+}).listen(3001, '127.0.0.1', () => {
+  console.log('Сервер начал прослушивание запросов');
+});

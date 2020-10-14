@@ -19,8 +19,8 @@
   },
   "scripts": {
     "startAPP": "react-scripts start",
-    "mockAPI": "json-server --watch db.js --port 3004",
-    "start": "concurrently --kill-others \"npm run startAPP\" \"npm run mockAPI\"",
+    "startServer": "node src/backend/server.js",
+    "start": "concurrently --kill-others \"npm run startAPP\" \"npm run startServer\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -49,7 +49,6 @@
     "eslint-plugin-prettier": "3.1.4",
     "eslint-plugin-react": "7.20.0",
     "eslint-plugin-react-hooks": "4.0.0",
-    "json-server": "0.16.1",
     "node-sass": "4.14.1"
   }
 }

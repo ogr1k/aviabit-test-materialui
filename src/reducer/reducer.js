@@ -15,7 +15,7 @@ const ActionCreator = {
 
 const Operation = {
   getFlightsData: () => (dispatch) => {
-    fetch('http://localhost:3004/flights')
+    fetch('http://localhost:3001')
       .then((res) => res.json())
       .then((data) => dispatch(ActionCreator.loadFlightsData(data)))
   },
