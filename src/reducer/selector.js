@@ -82,7 +82,7 @@ export const getPeriodData = createSelector(
   (flightsData, monthAndYear) => {
     const { year, month } = monthAndYear;
 
-    let interimResult = [];
+    let interimResult;
 
     if (month) {
       interimResult = flightsData

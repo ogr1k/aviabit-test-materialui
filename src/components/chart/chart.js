@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { FormControl, Box } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
@@ -64,7 +64,7 @@ const getDataSets = (pickedYear, timeData, flag, isYearChart) => {
   return null;
 }
 
-const Chart = (props) => {
+const Chart = memo((props) => {
   const {
     timeData, availableYears, labels, timeType, isYearChart,
   } = props;
@@ -136,6 +136,6 @@ const Chart = (props) => {
       </div>
     </div>
   )
-}
+})
 
 export default Chart;

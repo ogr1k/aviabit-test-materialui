@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -24,7 +24,7 @@ const getFormattedDestination = (name, airport) => {
   return result[airport ? 1 : 0].replace(/[)]/g, '');
 }
 
-const FlightCard = (props) => {
+const FlightCard = memo((props) => {
   const classes = useStyles();
   const { flightData } = props;
 
@@ -108,6 +108,6 @@ const FlightCard = (props) => {
       </CardContent>
     </Card>
   );
-}
+})
 
 export default FlightCard;

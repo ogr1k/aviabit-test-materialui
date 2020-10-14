@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, memo } from 'react';
 import { connect } from 'react-redux';
 import {
   Container, Typography, Box, NativeSelect, FormControl, FormHelperText,
@@ -21,7 +21,7 @@ const getFormattedData = (year, yearIndex, month, timeData, yearResults, timeTyp
   : `${formatDate(yearResults[timeType].flightTime[yearIndex])} 
           / ${formatDate(yearResults[timeType].workTime[yearIndex])}`)
 
-const PeriodInformation = (props) => {
+const PeriodInformation = memo((props) => {
   const {
     match, flights, timeData: data, availableYears, flightsData,
   } = props;
@@ -132,7 +132,7 @@ const PeriodInformation = (props) => {
       <FlightsCardsList flights={flights.plan} type="Запланированные" pickedMonth={routeParams.month} pickedYear={routeParams.year} />
     </Container>
   )
-};
+})
 
 const mapStateToProps = (state, ownProps) => ({
   timeData: getTimeData(state),

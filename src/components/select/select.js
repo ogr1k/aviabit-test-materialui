@@ -1,5 +1,5 @@
 import NativeSelect from '@material-ui/core/NativeSelect';
-import React from 'react';
+import React, { memo } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 const NativeSelectStyled = withStyles({
@@ -11,7 +11,7 @@ const NativeSelectStyled = withStyles({
   },
 })(NativeSelect);
 
-function Select(props) {
+const Select = memo((props) => {
   const { isPlanned, setIsPlanned, year } = props;
 
   const currentYear = new Date().getFullYear();
@@ -40,6 +40,6 @@ function Select(props) {
         )}
     </>
   )
-}
+})
 
 export default Select;
